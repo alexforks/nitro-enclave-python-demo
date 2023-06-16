@@ -44,6 +44,8 @@ def get_data():
         'kms': kms
     }
 
+    return data
+
 def main():
     data = get_data()
 
