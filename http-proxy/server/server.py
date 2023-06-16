@@ -3,22 +3,22 @@ import requests
 import json
 import boto3
 
-def aws_api_call(credential):
+def aws_api_call(data):
     """
-    Make AWS API call using credential obtained from parent EC2 instance
+    Make AWS API call using data obtained from parent EC2 instance
     """
 
     client = boto3.client(
         'kms',
-        region_name = 'us-east-1',
-        aws_access_key_id = credential['access_key_id'],
-        aws_secret_access_key = credential['secret_access_key'],
-        aws_session_token = credential['token']
+        region_name = data['kms']['region']
+        aws_access_key_id = data['credential']['access_key_id'],
+        aws_secret_access_key = data['credential']['secret_access_key'],
+        aws_session_token = data['credential']['token']
     )
 
     # This is just a demo API call to demonstrate that we can talk to AWS via API
     response = client.describe_key(
-        KeyId = ''
+        KeyId = data['kms']['key_id']
     )
 
     # Return some data from API response
@@ -49,12 +49,12 @@ def main():
     while True:
         c, addr = s.accept()
 
-        # Get AWS credential sent from parent instance
+        # Get data sent from parent instance
         payload = c.recv(4096)
-        credential = json.loads(payload.decode())
+        data = json.loads(payload.decode())
 
-        # Get data from AWS API call
-        content = aws_api_call(credential)
+        # Get response from AWS API call
+        content = aws_api_call(data)
 
         # Send the response back to parent instance
         c.send(str.encode(json.dumps(content)))

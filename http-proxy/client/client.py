@@ -21,9 +21,31 @@ def get_aws_session_token():
 
     return credential
 
-def main():
-    # Get EC2 instance metedata
+def get_aws_kms_key_cfg():
+    """
+    Get the AWS KMS key configuration
+    """
+    kms = {
+        'region': 'ap-northeast-1',
+        'key_id': 'mrk-451835b9aae341ccb91ba65fd906bd9a'
+    }
+
+    return kms
+
+def get_data():
+    """
+    Get the data
+    """
     credential = get_aws_session_token()
+    kms = get_aws_kms_key_cfg()
+
+    data = {
+        'credential': credential,
+        'kms': kms
+    }
+
+def main():
+    data = get_data()
 
     # Create a vsock socket object
     s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
@@ -38,7 +60,7 @@ def main():
     s.connect((cid, port))
 
     # Send AWS credential to the server running in enclave
-    s.send(str.encode(json.dumps(credential)))
+    s.send(str.encode(json.dumps(data)))
     
     # receive data from the server
     print(s.recv(1024).decode())
