@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # Assign an IP address to local loopback
 ifconfig lo 127.0.0.1
