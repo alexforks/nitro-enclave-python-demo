@@ -18,7 +18,7 @@ def aws_api_call(data):
 
     # This is just a demo API call to demonstrate that we can talk to AWS via API
     response = client.describe_key(
-        KeyId = data['kms']['key_id']
+        KeyId = data['kms']['arn']
     )
 
     # Return some data from API response

@@ -21,39 +21,32 @@ def get_aws_session_token():
 
     return credential
 
-def get_aws_kms_key_cfg():
-    """
-    Get the AWS KMS key configuration
-    """
-    kms = {
-        'region': 'ap-northeast-1',
-        'key_id': 'mrk-451835b9aae341ccb91ba65fd906bd9a'
-    }
-
-    return kms
-
-def get_data():
+def get_data(kms_arn):
     """
     Get the data
     """
     credential = get_aws_session_token()
-    kms = get_aws_kms_key_cfg()
 
     data = {
         'credential': credential,
-        'kms': kms
+        'kms': {
+            "arn": kms_arn
+        }
     }
 
     return data
 
 def main():
-    data = get_data()
-
     # Create a vsock socket object
     s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
     
     # Get CID from command line parameter
     cid = int(sys.argv[1])
+
+    # Get KMS ARN from command line parameter
+    kms_arn = sys.argv[2]
+
+    data = get_data(kms_arn)
 
     # The port should match the server running in enclave
     port = 5000
