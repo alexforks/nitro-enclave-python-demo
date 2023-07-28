@@ -51,13 +51,17 @@ def main():
 
         # Get data sent from parent instance
         payload = c.recv(4096)
-        data = json.loads(payload.decode())
 
-        # Get response from AWS API call
-        content = aws_api_call(data)
+        try:
+            data = json.loads(payload.decode())
 
-        # Send the response back to parent instance
-        c.send(str.encode(json.dumps(content)))
+            # Get response from AWS API call
+            content = aws_api_call(data)
+
+            # Send the response back to parent instance
+            c.send(str.encode(json.dumps(content)))
+        except Exception as e:
+            print(e)
 
         # Close the connection
         c.close() 
